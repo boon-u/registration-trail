@@ -5,13 +5,13 @@ import {
 } from "lucide-react";
 
 /*
-  REGISTRATION TRAIL — self-paced training.
+  REGISTRATION TRAIL: self-paced training.
   Open world map: all worlds unlocked, jump around in any order.
   Reflection answers go in Microsoft Forms (share the link separately).
 
   >>> EDIT THE QUESTIONS: every { type:"discuss", ... } prompt below is a
       placeholder for you to reword. Each needs a unique id if you wire answers later.
-      Discuss blocks are live group discussion — no Forms answer.
+      Discuss blocks are live group discussion, no Forms answer.
       { type:"scenario", ... } blocks set the scene; wrap key terms in { red: "..." }.
 */
 
@@ -67,7 +67,7 @@ const LEVELS = [
   {
     id: "setup", name: "Base Camp", sub: "Set up your tools",
     blocks: [
-      { type: "do", goal: "Before anything else — open the App Bar in the CIS sandbox." },
+      { type: "do", goal: "Before anything else, open the App Bar in the CIS sandbox." },
       { type: "do", goal: "Configure the App Bar to float, use large icons, and turn off ‘always on top’." },
       { type: "discuss", id: "setup_appbar_why", prompt: "Why do we add applications to the App Bar when we can already access them from the Storefront?" },
       { type: "do", goal: "Open PM Office. Explore the sections, the UI, and the features it offers. Ask your peer mentor if you want to know about something specific." },
@@ -97,11 +97,11 @@ const LEVELS = [
         { red: "scheduled" },
         " clinic visit in the IWK Allergy book. Book the appointment for a future date and set them up as ",
         { red: "pre-registered" },
-        " now, using the details you already have — keep everything ready for the day of the visit. When the patient arrives, check them in so registration at the desk goes faster.",
+        " now, using the details you already have. Keep everything ready for the day of the visit. When the patient arrives, check them in so registration at the desk goes faster.",
       ] },
       { type: "do", id: "out_schappbook", goal: "Open SchAppBook. Familiarize yourself with the options and features it offers." },
       { type: "concept", id: "out_grid_colours", title: "The colours on the grid", collapsible: true, unlockAfter: "out_schappbook",
-        lockedHint: "Try this in SchAppBook first — then tap here to reveal the colour guide.",
+        lockedHint: "Try this in SchAppBook first, then tap here to reveal the colour guide.",
         colourKey: [
           { swatch: C.gray, name: "Gray", status: "Pending (not confirmed)" },
           { swatch: C.blue, name: "Blue", status: "Confirmed" },
@@ -111,7 +111,7 @@ const LEVELS = [
       
       { type: "do", goal: "Schedule an appointment for your test patient. Try all three methods: Schedule, Suggest, Drag-and-drop." },
       { type: "flow", id: "out_op_journey", title: "The outpatient journey",
-        intro: "Tap Next to reveal each stage — from scheduling in SchAppBook to auto-discharge at end of day." },
+        intro: "Tap Next to reveal each stage, from scheduling in SchAppBook to auto-discharge at end of day." },
       { type: "rope", prompt: "Drag the thread from the appointment and connect it to the correct encounter.",
         appointment: "New clinic appointment",
         targets: [
@@ -128,7 +128,7 @@ const LEVELS = [
       { type: "concept", title: "A new admission is a new episode",
         body: "Days later the same patient is admitted. A pre-admit is created (like pre-reg, but for admission), then flips to an inpatient encounter." },
       { type: "flow", id: "inp_journey", flow: "inpatient", title: "The inpatient journey",
-        intro: "Tap Next to reveal each stage — from pre-admit through manual discharge." },
+        intro: "Tap Next to reveal each stage, from pre-admit through manual discharge." },
       { type: "do", goal: "Place the patient on the bed board, note the gender colours, then discharge when the go-ahead is given." },
     ],
   },
@@ -152,7 +152,7 @@ const LEVELS = [
     id: "boss", name: "Final Test", sub: "Fix the broken encounter", boss: true,
     blocks: [
       { type: "concept", title: "The mistake that happened at Go-Live",
-        body: "An appointment got mapped to the WRONG encounter — exactly the slip that happened repeatedly during go-live. Your job: spot it and re-map it." },
+        body: "An appointment got mapped to the WRONG encounter: exactly the slip that happened repeatedly during go-live. Your job: spot it and re-map it." },
       { type: "bossmap" },
 
       { type: "do", goal: "In the system: disassociate the incorrect encounter and re-map the appointment to the correct one." },
@@ -454,7 +454,7 @@ function RopeGame({ b }) {
         color: solved ? C.green : C.inkSoft, fontSize: 14 }}>
         {solved
           ? <span><Link2 size={15} style={{ verticalAlign: -2 }} /> Connected to the right encounter</span>
-          : "Drag the teal knot to an encounter — or tap one to connect"}
+          : "Drag the teal knot to an encounter, or tap one to connect"}
       </div>
     </div>
   );
@@ -462,14 +462,14 @@ function RopeGame({ b }) {
 
 const BOSS_MESSY_ENCS = [
   { id: "t1", encId: "IWK000012", sub: "prior allergy visit", y: 18 },
-  { id: "wrong", encId: "IWK000027", sub: "wrong — mapped here", y: 62 },
+  { id: "wrong", encId: "IWK000027", sub: "wrong, mapped here", y: 62 },
   { id: "t2", encId: "IWK000031", sub: "duplicate profile", y: 106 },
   { id: "t3", encId: "IWK000019", sub: "last month OP", y: 150 },
   { id: "t4", encId: "InBtwnVst02", sub: "in-between visit", y: 194 },
 ];
 
 const BOSS_CORRECT_ENC = {
-  id: "correct", encId: "IWK000008", sub: "this visit — no links yet", y: 318,
+  id: "correct", encId: "IWK000008", sub: "this visit, no links yet", y: 318,
 };
 
 const BOSS_MESSY_TANGLES = [
@@ -573,7 +573,7 @@ function BossMappingGame() {
 
   const end = remapEnd();
   const status = () => {
-    if (done) return { text: "Fixed — appointment re-mapped to the correct encounter.", color: C.green };
+    if (done) return { text: "Fixed: appointment re-mapped to the correct encounter.", color: C.green };
     if (phase === "cut") return { text: "Step 1: Click the red thread with your scissors to cut it.", color: C.inkSoft };
     return { text: "Step 2: Drag a new thread to the empty encounter below.", color: C.inkSoft };
   };
@@ -600,7 +600,7 @@ function BossMappingGame() {
         <rect x={368} y={8} width={288} height={228} rx="14" fill="#F0F2F5" stroke={C.line} strokeWidth="1.5" />
         <text x={380} y={26} fontFamily={display} fontSize="10" fontWeight="700" fill={C.inkSoft}>TANGLED ENCOUNTERS</text>
 
-        {/* messy threads — none touch correct encounter */}
+        {/* messy threads: none touch correct encounter */}
         {BOSS_MESSY_TANGLES.map(([a, b], i) => (
           <path key={`tg-${i}`} d={messyThread(MESSY_ANCHOR, messyY(a), MESSY_ANCHOR - 70 - (i % 3) * 18, messyY(b), i)}
             fill="none" stroke={C.gray} strokeWidth={2 + (i % 2) * 0.5} strokeDasharray={i % 3 === 0 ? "0" : "5 4"} opacity="0.55" />
@@ -659,7 +659,7 @@ function BossMappingGame() {
         {/* appointment */}
         <rect x={APPT.x} y={APPT.y} width={APPT.w} height="48" rx="10" fill={C.blueSoft} stroke={C.blue} strokeWidth="2" />
         <text x={APPT.x + 12} y={APPT.y + 20} fontFamily={display} fontSize="10" fill={C.blue} fontWeight="700">Appointment</text>
-        <text x={APPT.x + 12} y={APPT.y + 38} fontFamily={display} fontSize="12" fontWeight="800" fill={C.ink}>Clinic visit — fix me</text>
+        <text x={APPT.x + 12} y={APPT.y + 38} fontFamily={display} fontSize="12" fontWeight="800" fill={C.ink}>Clinic visit: fix me</text>
         <circle cx={APPT.anchorX} cy={APPT.anchorY} r="6" fill={C.blue} />
 
         {phase === "remap" && !done && (
@@ -694,7 +694,7 @@ function BossMappingGame() {
 
         {/* separator */}
         <line x1={368} y1={248} x2={656} y2={248} stroke={C.teal} strokeWidth="1.5" strokeDasharray="8 6" opacity="0.6" />
-        <text x={380} y={268} fontFamily={display} fontSize="10" fontWeight="700" fill={C.teal}>TARGET — NO CONNECTIONS</text>
+        <text x={380} y={268} fontFamily={display} fontSize="10" fontWeight="700" fill={C.teal}>TARGET: NO CONNECTIONS</text>
 
         {/* isolated correct encounter */}
         <rect x={CORRECT_X - 12} y={BOSS_CORRECT_ENC.y - 14} width={CORRECT_W + 24} height="72" rx="14"
@@ -708,7 +708,7 @@ function BossMappingGame() {
         <circle cx={CORRECT_ANCHOR} cy={correctY} r="6" fill={done ? C.green : C.teal} />
         {wrongFlash && (
           <text x={CORRECT_X + CORRECT_W / 2} y={BOSS_CORRECT_ENC.y - 20} textAnchor="middle"
-            fontFamily={display} fontSize="11" fontWeight="700" fill={C.red}>Map here — not the tangled ones</text>
+            fontFamily={display} fontSize="11" fontWeight="700" fill={C.red}>Map here, not the tangled ones</text>
         )}
       </svg>
       </div>
@@ -987,10 +987,10 @@ function RecurringAppointmentsDiagram() {
   const encRecurring = clicks.some((c) => c >= 1);
 
   const statusMsg = () => {
-    if (allDone) return "All threads connected — one encounter, four visits, check-in and service interaction each.";
+    if (allDone) return "All threads connected: one encounter, four visits, check-in and service interaction each.";
     if (!encAppt.every(Boolean)) return "Drag a thread from the encounter or an appointment to connect them.";
     if (encAppt.some((ok, i) => ok && clicks[i] < 2)) {
-      return "Use Actions beside each connected appointment — 2 times per appointment.";
+      return "Use Actions beside each connected appointment (2 times per appointment).";
     }
     return "Keep going…";
   };
@@ -1001,7 +1001,7 @@ function RecurringAppointmentsDiagram() {
     <div style={{ ...cardBox, border: `2px solid ${C.teal}`, background: "#F8FDFC" }}>
       <div style={rowHead}>
         <Link2 size={18} style={{ color: C.teal }} />
-        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>RECURRING SERIES — CONNECT IT</span>
+        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>RECURRING SERIES: CONNECT IT</span>
       </div>
       <p style={{ margin: "0 0 12px", color: C.ink, lineHeight: 1.55, fontSize: 14 }}>
         One pre-recurring encounter fans out to every visit in the series. Attach all encounter threads yourself, then use Actions on each appointment.
@@ -1024,7 +1024,7 @@ function RecurringAppointmentsDiagram() {
           />
         )}
 
-        {/* appointment → check-in / service — auto on Actions click */}
+        {/* appointment → check-in / service: auto on Actions click */}
         {APPT_YS.map((y, i) => {
           const rows = [];
           if (clicks[i] >= 1) {
@@ -1036,7 +1036,7 @@ function RecurringAppointmentsDiagram() {
           return rows;
         })}
 
-        {/* encounter — beside first appointment */}
+        {/* encounter: beside first appointment */}
         <g>
           {encRecurring && (
             <rect x={ENC_X - 8} y={ENC_Y - 8} width={ENC_W + 16} height={ENC_H + 16} rx="14"
@@ -1117,7 +1117,7 @@ function RecurringAppointmentsDiagram() {
         background: REC_SERVICE, border: `2px solid ${REC_SERVICE_STROKE}`, borderRadius: 12,
         padding: "12px 14px", fontSize: 14, lineHeight: 1.55, color: C.ink, fontWeight: 600,
       }}>
-        <b>Important:</b> The Service Interaction must be created <b>explicitly and manually</b> after the appointment is checked in — it does not happen on its own.
+        <b>Important:</b> The Service Interaction must be created <b>explicitly and manually</b> after the appointment is checked in. It does not happen on its own.
       </div>
     </div>
   );
@@ -1212,10 +1212,10 @@ function GroupSessionsDemo() {
     <div style={{ ...cardBox, border: `2px solid ${C.teal}`, background: "#F8FDFC" }}>
       <div style={rowHead}>
         <Link2 size={18} style={{ color: C.teal }} />
-        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>GROUP CONTAINER — TRY IT</span>
+        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>GROUP CONTAINER: TRY IT</span>
       </div>
       <p style={{ margin: "0 0 14px", color: C.ink, lineHeight: 1.55, fontSize: 14 }}>
-        Drag patients from the waiting list into the group circle. Set the capacity — once it is full, no more members can be added.
+        Drag patients from the waiting list into the group circle. Set the capacity. Once it is full, no more members can be added.
       </p>
 
       <div style={{ display: "flex", gap: 20, alignItems: "stretch", flexWrap: "wrap" }}>
@@ -1299,7 +1299,7 @@ function GroupSessionsDemo() {
             margin: "12px 0 0", fontFamily: display, fontWeight: 700, fontSize: 13, textAlign: "center",
             color: fullFlash ? C.red : full ? C.red : members.length === cap ? C.green : C.inkSoft,
           }}>
-            {fullFlash ? "Capacity reached — cannot add more members."
+            {fullFlash ? "Capacity reached. Cannot add more members."
               : full ? "Group is full."
                 : members.length > 0 ? "Drop patients inside the circle."
                   : "Drag patients here to fill the group."}
@@ -1324,7 +1324,7 @@ function GroupSessionsDemo() {
 function Encounters101Demo() {
   const ENC_X = 18, ENC_W = 152, ENC_ANCHOR = ENC_X + ENC_W;
   const APPT_X = 400, APPT_ANCHOR = APPT_X;
-  // Jumbled positions — threads cross when correctly connected
+  // Jumbled positions: threads cross when correctly connected
   const ITEMS = [
     { encId: "IWK000001", encLabel: "Encounter", color: C.blue, soft: C.blueSoft, encY: 48, apptY: 272 },
     { encId: "IWK000002", encLabel: "Encounter", color: C.teal, soft: C.tealSoft, encY: 272, apptY: 48 },
@@ -1365,7 +1365,7 @@ function Encounters101Demo() {
   const tryConnect = (from, to) => {
     if (connected[from]) return;
     if (from !== to) {
-      setBlocked("That colour doesn't match — each encounter only connects to its own appointment.");
+      setBlocked("That colour doesn't match. Each encounter only connects to its own appointment.");
       setTimeout(() => setBlocked(""), 2200);
       return;
     }
@@ -1408,10 +1408,10 @@ function Encounters101Demo() {
 
       <div style={rowHead}>
         <Link2 size={18} style={{ color: C.teal }} />
-        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>IDEAL MAPPING — TRY IT</span>
+        <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 13 }}>IDEAL MAPPING: TRY IT</span>
       </div>
       <p style={{ margin: "0 0 10px", color: C.ink, lineHeight: 1.55, fontSize: 14 }}>
-        Encounters and appointments are jumbled on purpose — drag each coloured thread to its <b>matching</b> appointment. Threads will cross.
+        Encounters and appointments are jumbled on purpose. Drag each coloured thread to its <b>matching</b> appointment. Threads will cross.
       </p>
 
       <svg ref={svgRef} viewBox="0 0 600 340" style={{ width: "100%", height: "auto", display: "block", touchAction: "none", userSelect: "none" }}
@@ -1474,7 +1474,7 @@ function Encounters101Demo() {
       <div style={{ textAlign: "center", marginTop: 6, fontFamily: display, fontWeight: 700, fontSize: 14,
         color: allDone ? C.green : blocked ? C.red : C.inkSoft }}>
         {allDone
-          ? <span><Link2 size={15} style={{ verticalAlign: -2 }} /> All three mapped — one encounter per appointment</span>
+          ? <span><Link2 size={15} style={{ verticalAlign: -2 }} /> All three mapped: one encounter per appointment</span>
           : blocked || "Drag each coloured knot to its matching appointment"}
       </div>
     </div>
@@ -1492,7 +1492,7 @@ function DiscussBlock({ b, profile }) {
         <span style={{
           fontFamily: display, fontWeight: 800, color: "#B8851A", fontSize: 13,
           background: C.goldSoft, padding: "4px 10px", borderRadius: 999, letterSpacing: 0.4,
-        }}>OPEN DISCUSSION — SHARE OUT LOUD</span>
+        }}>OPEN DISCUSSION: SHARE OUT LOUD</span>
       </div>
       <p style={{ margin: "0 0 12px", color: C.ink, lineHeight: 1.6, fontWeight: 500, fontSize: 15 }}>{b.prompt}</p>
       <div style={{ background: C.card, border: `1px dashed ${C.gold}`, borderRadius: 12, padding: "12px 14px", fontSize: 14, color: C.ink, lineHeight: 1.55 }}>
@@ -1553,7 +1553,7 @@ function FormsBanner() {
     <div style={{ background: "rgba(255,255,255,0.85)", borderRadius: 12, padding: "10px 14px", marginBottom: 10, lineHeight: 1.45, border: `1px solid ${C.line}` }}>
       <p style={{ margin: 0, fontSize: 13, color: C.ink }}>
         <b style={{ fontFamily: display, color: C.teal }}>How this works:</b> Do tasks in the CIS Edu domain
-        {FORMS_URL ? " — " : "."}
+        {FORMS_URL ? ", " : "."}
         {FORMS_URL && (
           <a href={FORMS_URL} target="_blank" rel="noopener noreferrer"
             style={{ color: C.teal, fontWeight: 700, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4 }}>
@@ -1721,7 +1721,7 @@ function CredentialsScreen({ profile, onStart }) {
             </div>
           ))}
           <p style={{ fontSize: 12, color: C.inkSoft, margin: "14px 0 0", lineHeight: 1.45 }}>
-            Fictitious training data only — not a real patient. The expiry date is within the next week so you can practise the expiring-cards work list later.
+            Fictitious training data only, not a real patient. The expiry date is within the next week so you can practise the expiring-cards work list later.
           </p>
           <button onClick={onStart} style={{ ...primaryBtn, width: "100%", marginTop: 18 }}>
             Enter the trail <ChevronRight size={18} />
