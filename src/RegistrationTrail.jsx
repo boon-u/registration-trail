@@ -234,6 +234,7 @@ function ConceptBlock({ b, doneSteps }) {
         background: unlocked ? C.card : "#F8FAFC",
       }}>
         <button type="button" onClick={() => unlocked && setOpen((v) => !v)} disabled={!unlocked}
+          className={unlocked ? "rt-interactive-tap" : undefined}
           style={{
             width: "100%", border: "none", background: "transparent", cursor: unlocked ? "pointer" : "not-allowed",
             textAlign: "left", padding: 0, font: "inherit", color: "inherit",
@@ -279,7 +280,7 @@ function DoBlock({ b, doneSteps, onDone }) {
         <span style={{ fontFamily: display, fontWeight: 700, color: C.blue, fontSize: 13 }}>TRY IT YOURSELF</span></div>
       <p style={{ margin: "0 0 12px", color: C.ink, lineHeight: 1.6, fontWeight: 500 }}>{b.goal}</p>
       {b.id && (
-        <button type="button" onClick={() => onDone(b.id)} disabled={done} style={{
+        <button type="button" className={done ? undefined : "rt-interactive-tap"} onClick={() => onDone(b.id)} disabled={done} style={{
           ...primaryBtn, width: "100%", justifyContent: "center",
           background: done ? C.greenSoft : C.blue, color: done ? C.green : "#fff",
           border: done ? `1px solid ${C.green}` : "none", cursor: done ? "default" : "pointer",
@@ -302,7 +303,7 @@ function GateBlock({ b }) {
       <p style={{ margin: "0 0 14px", color: C.ink, lineHeight: 1.6, fontWeight: 500 }}>{b.scenario}</p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
         {[["new", "Create new encounter"], ["existing", "Choose existing"]].map(([v, label]) => (
-          <button key={v} onClick={() => pick(v)} disabled={!!choice} style={{ ...gateBtn, cursor: choice ? "default" : "pointer",
+          <button key={v} className={choice ? undefined : "rt-interactive-tap"} onClick={() => pick(v)} disabled={!!choice} style={{ ...gateBtn, cursor: choice ? "default" : "pointer",
             borderColor: choice === v ? (v === b.correct ? C.green : C.red) : C.line,
             background: choice === v ? (v === b.correct ? C.greenSoft : C.redSoft) : C.card }}>{label}</button>))}
       </div>
@@ -417,7 +418,7 @@ function RopeGame({ b }) {
           <circle cx={anchor.x} cy={anchor.y} r="5" fill={C.gray} />
         </g>
         {!solved && (
-          <g style={{ cursor: dragging ? "grabbing" : "grab" }}
+          <g className={dragging ? undefined : "rt-interactive-drag"} style={{ cursor: dragging ? "grabbing" : "grab" }}
             onPointerDown={(e) => {
               e.preventDefault();
               setDragging(true);
@@ -434,7 +435,7 @@ function RopeGame({ b }) {
           const wrong = wrongFlash === i;
           const hover = hoverIdx === i && !solved;
           return (
-            <g key={"tg" + i}
+            <g key={"tg" + i} className={solved ? undefined : "rt-interactive-tap"}
               onClick={() => !solved && connectTo(i)}
               style={{ cursor: solved ? "default" : "pointer" }}
               role="button" aria-label={t.label} tabIndex={0}
@@ -628,7 +629,8 @@ function BossMappingGame() {
             <path d={redThread} fill="none" stroke="transparent" strokeWidth="18" strokeLinecap="round"
               style={{ cursor: SCISSOR_CURSOR }}
               onPointerDown={(e) => { e.stopPropagation(); onCut(); }} />
-            <path d={redThread} fill="none" stroke={C.red} strokeWidth="3.5" strokeLinecap="round" pointerEvents="none" />
+            <path d={redThread} fill="none" stroke={C.red} strokeWidth="3.5" strokeLinecap="round"
+              pointerEvents="none" className="rt-thread-cut-hint" />
           </>
         )}
         {cutting && (
@@ -663,7 +665,7 @@ function BossMappingGame() {
         <circle cx={APPT.anchorX} cy={APPT.anchorY} r="6" fill={C.blue} />
 
         {phase === "remap" && !done && (
-          <g style={{ cursor: dragging ? "grabbing" : "grab" }}
+          <g className={dragging ? undefined : "rt-interactive-drag"} style={{ cursor: dragging ? "grabbing" : "grab" }}
             onPointerDown={(e) => {
               e.preventDefault();
               setDragging(true);
@@ -821,7 +823,7 @@ function FlowDiagramBlock({ b }) {
         <span style={{ fontFamily: font, fontSize: 13, color: C.inkSoft }}>
           {done ? "Full journey revealed" : `Stage ${step} of ${total}`}
         </span>
-        <button type="button" onClick={() => setStep((s) => Math.min(s + 1, total))} disabled={done} style={{
+        <button type="button" className={done ? undefined : "rt-interactive-tap"} onClick={() => setStep((s) => Math.min(s + 1, total))} disabled={done} style={{
           ...primaryBtn, minWidth: 120, justifyContent: "center",
           opacity: done ? 0.55 : 1, cursor: done ? "default" : "pointer",
         }}>
@@ -1052,6 +1054,7 @@ function RecurringAppointmentsDiagram() {
           </text>
           <text x={ENC_X + 12} y={ENC_Y + 50} fontFamily={display} fontSize="14" fontWeight="800" fill={C.ink}>encounter</text>
           <circle cx={ENC_ANCHOR} cy={ENC_CY} r="7" fill={C.green} stroke="#fff" strokeWidth="2"
+          className={encAppt.every(Boolean) ? undefined : "rt-interactive-drag"}
           style={{ cursor: encAppt.every(Boolean) ? "default" : "grab" }}
           onPointerDown={(e) => {
             if (encAppt.every(Boolean)) return;
@@ -1072,6 +1075,7 @@ function RecurringAppointmentsDiagram() {
               <circle cx={APPT_ANCHOR} cy={y} r="6" fill={C.green} />
               {!encAppt[i] && (
                 <circle cx={APPT_ANCHOR} cy={y} r="10" fill={C.green} stroke="#fff" strokeWidth="2"
+                  className="rt-interactive-drag"
                   style={{ cursor: "grab" }}
                   onPointerDown={(e) => {
                     e.preventDefault(); e.stopPropagation();
@@ -1082,7 +1086,7 @@ function RecurringAppointmentsDiagram() {
                   }} />
               )}
               {encAppt[i] && clicks[i] < 2 && (
-                <g style={{ cursor: "pointer" }} onClick={() => onApptAction(i)}
+                <g className="rt-interactive-tap" style={{ cursor: "pointer" }} onClick={() => onApptAction(i)}
                   onPointerDown={(e) => e.stopPropagation()}>
                   <circle cx={ACTIONS_X} cy={y} r="18" fill={C.goldSoft} stroke={C.gold} strokeWidth="2" />
                   <text x={ACTIONS_X} y={y - 3} textAnchor="middle" fontFamily={display} fontSize="8" fontWeight="800" fill="#B8851A">actions</text>
@@ -1232,7 +1236,7 @@ function GroupSessionsDemo() {
               <span style={{ fontSize: 13, color: C.inkSoft, fontStyle: "italic" }}>Everyone is in the group.</span>
             )}
             {waiting.map((p) => (
-              <div key={p.id} onPointerDown={(e) => onDown(p.id, e)}
+              <div key={p.id} className={dragId === p.id ? undefined : "rt-interactive-drag"} onPointerDown={(e) => onDown(p.id, e)}
                 style={{
                   width: 48, height: 48, display: "flex", alignItems: "center", justifyContent: "center",
                   background: C.paper, borderRadius: 12, border: `1px solid ${C.line}`,
@@ -1263,7 +1267,7 @@ function GroupSessionsDemo() {
               }} />
           </div>
 
-          <div ref={groupRef} style={{
+          <div ref={groupRef} className={full ? undefined : "rt-interactive-drop"} style={{
             position: "relative", width: "min(100%, 300px)", aspectRatio: "1", borderRadius: "50%",
             overflow: "hidden",
             border: `3px ${fullFlash ? "solid" : "dashed"} ${fullFlash ? C.red : hoverGroup && !full ? C.teal : C.inkSoft}`,
@@ -1441,6 +1445,7 @@ function Encounters101Demo() {
               <circle cx={ENC_ANCHOR} cy={item.encY} r="6" fill={item.color} />
               {!done && (
                 <circle cx={endX} cy={endY} r="12" fill={item.color} stroke="#fff" strokeWidth="2"
+                  className={dragging ? undefined : "rt-interactive-drag"}
                   style={{ cursor: dragging ? "grabbing" : "grab" }}
                   onPointerDown={(e) => {
                     e.preventDefault(); e.stopPropagation();
@@ -1450,7 +1455,7 @@ function Encounters101Demo() {
                     e.currentTarget.setPointerCapture(e.pointerId);
                   }} />
               )}
-              <g onClick={() => !done && tryConnect(i, i)} style={{ cursor: done ? "default" : "pointer" }}>
+              <g className={done ? undefined : "rt-interactive-tap"} onClick={() => !done && tryConnect(i, i)} style={{ cursor: done ? "default" : "pointer" }}>
                 <rect x={APPT_X - 6} y={item.apptY - 26} width="148" height="52" rx="10"
                   fill={done ? item.soft : targetHover ? item.soft : C.card}
                   stroke={done ? item.color : targetHover ? item.color : C.line} strokeWidth={done || targetHover ? 2.5 : 1.5} />
@@ -1515,7 +1520,7 @@ function QuizBlock({ b }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {b.options.map((opt, i) => {
           const show = value !== undefined, right = i === b.answerIndex, chosen = value === i;
-          return <button key={i} onClick={() => pick(i)} disabled={show} style={{
+          return <button key={i} className={show ? undefined : "rt-interactive-tap"} onClick={() => pick(i)} disabled={show} style={{
             textAlign: "left", padding: "10px 14px", borderRadius: 10, cursor: show ? "default" : "pointer",
             fontFamily: font, fontSize: 14, color: C.ink,
             border: `1px solid ${show && right ? C.green : chosen ? C.red : C.line}`,
@@ -1629,7 +1634,7 @@ function WorldMap({ onOpen, mascot, lastLevelId }) {
           {LEVELS.map((lv, i) => {
             const x = px(i), y = py(i), boxY = i % 2 === 0 ? y + 38 : y - 96;
             return (
-              <g key={lv.id} onClick={() => onOpen(lv.id)}
+              <g key={lv.id} className="rt-interactive-tap" onClick={() => onOpen(lv.id)}
                  style={{ cursor: "pointer" }} role="button" tabIndex={0}
                  aria-label={lv.name} onKeyDown={(e) => { if (e.key === "Enter") onOpen(lv.id); }}>
                 <rect x={x - 78} y={boxY} width="156" height="58" rx="13" fill={C.card} stroke={lv.boss ? C.gold : C.line} strokeWidth="1.5" />
@@ -1676,13 +1681,13 @@ function StartScreen({ onContinue }) {
           <div style={{ maxHeight: 220, overflowY: "auto", padding: 4, marginBottom: 18 }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(10, 1fr)", gap: 6 }}>
               {MASCOTS.map((m) => (
-                <button key={m} type="button" onClick={() => setMascot(m)} aria-label="avatar" style={{
+                <button key={m} type="button" className="rt-interactive-tap" onClick={() => setMascot(m)} aria-label="avatar" style={{
                   fontSize: 22, padding: 5, borderRadius: 10, cursor: "pointer", lineHeight: 1,
                   border: `2px solid ${mascot === m ? C.teal : C.line}`, background: mascot === m ? C.tealSoft : C.card }}>{m}</button>
               ))}
             </div>
           </div>
-          <button disabled={!ready} onClick={() => onContinue({ name: name.trim(), mascot })}
+          <button disabled={!ready} className={ready ? "rt-interactive-tap" : undefined} onClick={() => onContinue({ name: name.trim(), mascot })}
             style={{ ...primaryBtn, width: "100%", opacity: ready ? 1 : 0.5, cursor: ready ? "pointer" : "not-allowed" }}>
             Continue <ChevronRight size={18} />
           </button>
@@ -1723,7 +1728,7 @@ function CredentialsScreen({ profile, onStart }) {
           <p style={{ fontSize: 12, color: C.inkSoft, margin: "14px 0 0", lineHeight: 1.45 }}>
             Fictitious training data only, not a real patient. The expiry date is within the next week so you can practise the expiring-cards work list later.
           </p>
-          <button onClick={onStart} style={{ ...primaryBtn, width: "100%", marginTop: 18 }}>
+          <button className="rt-interactive-tap" onClick={onStart} style={{ ...primaryBtn, width: "100%", marginTop: 18 }}>
             Enter the trail <ChevronRight size={18} />
           </button>
         </div>
@@ -1893,7 +1898,7 @@ function LevelView({ level, profile, onBack, prevLevel, onPrev, nextLevel, onNex
           Back to trail
         </button>
         {level.boss && !nextLevel ? (
-          <button onClick={onFinish} style={{ ...primaryBtn, ...navBtn, background: C.gold, color: C.ink }}>
+          <button onClick={onFinish} className="rt-interactive-tap" style={{ ...primaryBtn, ...navBtn, background: C.gold, color: C.ink }}>
             <Star size={16} fill={C.ink} />
             Finish the trail
           </button>
@@ -1962,7 +1967,15 @@ export default function App() {
         @keyframes discussPop{0%{transform:translateY(6px);opacity:.7;box-shadow:0 0 0 0 rgba(242,181,59,0.35)}70%{box-shadow:0 4px 24px rgba(242,181,59,0.2),0 0 0 6px rgba(242,181,59,0.18)}100%{transform:translateY(0);opacity:1}}
         .avatar-rain-drop{animation:avatarRain linear forwards}
         @keyframes avatarRain{0%{transform:translateY(-10vh) translateX(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) translateX(var(--rain-drift,0px)) rotate(360deg);opacity:.85}}
-        @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop{display:none}}`}</style>
+        .rt-interactive-tap{animation:rtTap 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+        .rt-interactive-drag{animation:rtDrag 1.7s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+        .rt-interactive-drop{animation:rtDrop 2.2s ease-in-out infinite}
+        .rt-thread-cut-hint{animation:rtCutHint 1.3s ease-in-out infinite}
+        @keyframes rtTap{0%,100%{transform:scale(1) rotate(0deg)}15%{transform:scale(1.03) rotate(-2deg)}30%{transform:scale(1.03) rotate(2deg)}45%{transform:scale(1) rotate(0deg)}}
+        @keyframes rtDrag{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.08)}}
+        @keyframes rtDrop{0%,100%{box-shadow:0 0 0 0 rgba(14,156,138,0);border-color:rgba(74,92,112,.45)}50%{box-shadow:0 0 0 6px rgba(14,156,138,.22);border-color:rgba(14,156,138,.75)}}
+        @keyframes rtCutHint{0%,100%{stroke-opacity:1;stroke-width:3.5}50%{stroke-opacity:.55;stroke-width:5}}
+        @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop{display:none}}`}</style>
       {screen === "start" && (
         <StartScreen onContinue={(p) => { setProfile(p); setScreen("credentials"); }} />
       )}
