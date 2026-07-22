@@ -34,9 +34,6 @@ const MASCOTS = [
   "🐩","🦮","🐈","🐈‍⬛","🦃","🐋","🐬","🦈","🐟","🐠",
   "🐡","🦐","🦑","🐌","🦋","🐛","🐝","🪲","🐞","🦗",
 ];
-const SANDBOX = {
-  healthCard: "5012 468 503",
-};
 const MONTHS_SHORT = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const formatDob = (d) =>
   `${String(d.getDate()).padStart(2, "0")}-${MONTHS_SHORT[d.getMonth()]}-${d.getFullYear()}`;
@@ -47,6 +44,13 @@ const randomPatientDob = () => {
   const earliest = new Date(today.getFullYear() - 85, today.getMonth(), today.getDate());
   const pick = earliest.getTime() + Math.random() * (latest.getTime() - earliest.getTime());
   return formatDob(new Date(pick));
+};
+const formatHealthCard = (digits) =>
+  `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7, 10)}`;
+const randomHealthCard = () => {
+  let digits = String(1 + Math.floor(Math.random() * 9));
+  for (let i = 0; i < 9; i++) digits += String(Math.floor(Math.random() * 10));
+  return formatHealthCard(digits);
 };
 const formatExpiry = () => {
   const d = new Date();
@@ -1555,7 +1559,7 @@ function PatientRefBar({ profile }) {
       </div>
       <div style={{ fontSize: 12, lineHeight: 1.55 }}>
         <div><span style={{ color: C.inkSoft }}>Name </span><span style={{ fontWeight: 700, color: C.ink }}>{profile.name}</span></div>
-        <div><span style={{ color: C.inkSoft }}>MSI </span><span style={{ fontWeight: 700, color: C.ink, fontFamily: display }}>{SANDBOX.healthCard}</span></div>
+        <div><span style={{ color: C.inkSoft }}>MSI </span><span style={{ fontWeight: 700, color: C.ink, fontFamily: display }}>{profile.healthCard}</span></div>
         <div><span style={{ color: C.inkSoft }}>DOB </span><span style={{ fontWeight: 700, color: C.ink }}>{profile.dob}</span></div>
       </div>
     </div>
@@ -1710,7 +1714,7 @@ function CredentialsScreen({ profile, onStart }) {
   const expiry = formatExpiry();
   const rows = [
     ["Patient name", profile.name],
-    ["Health card (MSI)", SANDBOX.healthCard],
+    ["Health card (MSI)", profile.healthCard],
     ["Date of birth", profile.dob],
     ["Card expiry", expiry],
   ];
@@ -1986,7 +1990,10 @@ export default function App() {
         @keyframes rtCutHint{0%,100%{stroke-opacity:1;stroke-width:3.5}50%{stroke-opacity:.55;stroke-width:5}}
         @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop{display:none}}`}</style>
       {screen === "start" && (
-        <StartScreen onContinue={(p) => { setProfile({ ...p, dob: randomPatientDob() }); setScreen("credentials"); }} />
+        <StartScreen onContinue={(p) => {
+          setProfile({ ...p, dob: randomPatientDob(), healthCard: randomHealthCard() });
+          setScreen("credentials");
+        }} />
       )}
       {screen === "credentials" && profile && (
         <CredentialsScreen profile={profile} onStart={() => setScreen("map")} />
