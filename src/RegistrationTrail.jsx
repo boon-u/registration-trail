@@ -45,13 +45,7 @@ const randomPatientDob = () => {
   const pick = earliest.getTime() + Math.random() * (latest.getTime() - earliest.getTime());
   return formatDob(new Date(pick));
 };
-const formatHealthCard = (digits) =>
-  `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7, 10)}`;
-const randomHealthCard = () => {
-  let digits = String(1 + Math.floor(Math.random() * 9));
-  for (let i = 0; i < 9; i++) digits += String(Math.floor(Math.random() * 10));
-  return formatHealthCard(digits);
-};
+const FIXED_HEALTH_CARD = "5012 468 503";
 const formatExpiry = () => {
   const d = new Date();
   d.setDate(d.getDate() + 5);
@@ -1991,7 +1985,7 @@ export default function App() {
         @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop{display:none}}`}</style>
       {screen === "start" && (
         <StartScreen onContinue={(p) => {
-          setProfile({ ...p, dob: randomPatientDob(), healthCard: randomHealthCard() });
+          setProfile({ ...p, dob: randomPatientDob(), healthCard: FIXED_HEALTH_CARD });
           setScreen("credentials");
         }} />
       )}
