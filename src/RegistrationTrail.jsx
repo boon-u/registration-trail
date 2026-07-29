@@ -15,6 +15,7 @@ import {
       { type:"scenario", ... } blocks set the scene; wrap key terms in { red: "..." }.
 
   >>> EDIT PARTICIPANTS: replace the names in PARTICIPANTS below for the call-on spinner.
+      SPIN_SEED controls the first few forced winners (then random).
 */
 
 const C = {
@@ -67,6 +68,8 @@ const PARTICIPANTS = [
   "Paramjit Kaur",
   "Hastings Gold",
 ];
+// First N spins land on these people (match first or last name), then fully random
+const SPIN_SEED = ["Gold", "Yomna", "Christine", "Matthew", "Christina"];
 const WHEEL_COLORS = [
   "#5EEAD4", "#60A5FA", "#FBBF24", "#4ADE80",
   "#C084FC", "#FB7185", "#A3E635", "#F472B6",
@@ -1758,6 +1761,17 @@ function wheelLabel(fullName) {
   return fullName.trim().split(/\s+/)[0] || fullName;
 }
 
+function findParticipantIndex(list, seed) {
+  const q = String(seed || "").trim().toLowerCase();
+  if (!q) return -1;
+  const exact = list.findIndex((name) => name.toLowerCase() === q);
+  if (exact >= 0) return exact;
+  return list.findIndex((name) => {
+    const parts = name.trim().toLowerCase().split(/\s+/);
+    return parts[0] === q || parts[parts.length - 1] === q;
+  });
+}
+
 function NameCallSpinner({ names = PARTICIPANTS }) {
   const list = names.filter(Boolean);
   const n = list.length;
@@ -1774,6 +1788,7 @@ function NameCallSpinner({ names = PARTICIPANTS }) {
   const [winner, setWinner] = useState(null);
   const [winnerIdx, setWinnerIdx] = useState(null);
   const spinTimers = useRef([]);
+  const seedPos = useRef(0);
 
   useEffect(() => () => {
     spinTimers.current.forEach((t) => clearTimeout(t));
@@ -1792,7 +1807,12 @@ function NameCallSpinner({ names = PARTICIPANTS }) {
     spinTimers.current.forEach((t) => clearTimeout(t));
     spinTimers.current = [];
 
-    const idx = Math.floor(Math.random() * n);
+    let idx = -1;
+    if (seedPos.current < SPIN_SEED.length) {
+      idx = findParticipantIndex(list, SPIN_SEED[seedPos.current]);
+      seedPos.current += 1;
+    }
+    if (idx < 0) idx = Math.floor(Math.random() * n);
     const centerFromTop = idx * slice + slice / 2;
     const extraSpins = 5 + Math.floor(Math.random() * 3);
     // Land past the winner toward the next pie, then ease back onto center
