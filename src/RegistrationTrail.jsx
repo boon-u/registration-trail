@@ -1682,12 +1682,13 @@ function QuizBlock({ b }) {
 }
 
 function PatientRefBar({ profile }) {
+  const expiry = profile.cardExpiry || formatExpiry();
   return (
     <div style={{
       position: "fixed", top: "clamp(10px, 2vw, 16px)", right: "clamp(10px, 2vw, 16px)", zIndex: 100,
       background: C.card, border: `1px solid ${C.teal}`, borderRadius: 12,
       padding: "10px 14px", boxShadow: "0 4px 18px rgba(20,40,60,0.1)",
-      minWidth: 168, maxWidth: 240,
+      minWidth: 176, maxWidth: 260,
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8 }}>
         <IdCard size={14} style={{ color: C.teal }} />
@@ -1697,6 +1698,7 @@ function PatientRefBar({ profile }) {
         <div><span style={{ color: C.inkSoft }}>Name </span><span style={{ fontWeight: 700, color: C.ink }}>{profile.name}</span></div>
         <div><span style={{ color: C.inkSoft }}>MSI </span><span style={{ fontWeight: 700, color: C.ink, fontFamily: display }}>{profile.healthCard}</span></div>
         <div><span style={{ color: C.inkSoft }}>DOB </span><span style={{ fontWeight: 700, color: C.ink }}>{profile.dob}</span></div>
+        <div><span style={{ color: C.inkSoft }}>Expiry </span><span style={{ fontWeight: 700, color: C.ink }}>{expiry}</span></div>
       </div>
     </div>
   );
@@ -2187,46 +2189,6 @@ function StartScreen({ onContinue }) {
   );
 }
 
-function CredentialsScreen({ profile, onStart }) {
-  const expiry = formatExpiry();
-  const rows = [
-    ["Patient name", profile.name],
-    ["Health card (MSI)", profile.healthCard],
-    ["Date of birth", profile.dob],
-    ["Card expiry", expiry],
-  ];
-  return (
-    <div style={{ minHeight: "100vh", background: C.paper, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 18px" }}>
-      <div style={{ width: "100%", maxWidth: 520 }}>
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <div style={{ fontSize: 40, lineHeight: 1 }}>{profile.mascot}</div>
-          <div style={{ fontFamily: display, fontWeight: 700, fontSize: 22, color: C.ink, marginTop: 8 }}>Hi, {profile.name}!</div>
-          <p style={{ color: C.inkSoft, margin: "6px 0 0", lineHeight: 1.5 }}>Use these details to create your test patient in the CIS sandbox.</p>
-        </div>
-        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, padding: 22 }}>
-          <div style={rowHead}>
-            <IdCard size={18} style={{ color: C.teal }} />
-            <span style={{ fontFamily: display, fontWeight: 700, color: C.teal, fontSize: 14 }}>SANDBOX TEST PATIENT</span>
-          </div>
-          {rows.map(([k, v]) => (
-            <div key={k} style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "10px 0",
-              borderBottom: `1px solid ${C.line}`, fontSize: 14 }}>
-              <span style={{ color: C.inkSoft, fontWeight: 500 }}>{k}</span>
-              <span style={{ color: C.ink, fontWeight: 700, fontFamily: display, textAlign: "right" }}>{v}</span>
-            </div>
-          ))}
-          <p style={{ fontSize: 12, color: C.inkSoft, margin: "14px 0 0", lineHeight: 1.45 }}>
-            Fictitious training data only, not a real patient. The expiry date is within the next week so you can practise the expiring-cards work list later.
-          </p>
-          <button className="rt-interactive-tap" onClick={onStart} style={{ ...primaryBtn, width: "100%", marginTop: 18 }}>
-            Enter the trail <ChevronRight size={18} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function Roadmap({ onOpen, profile, lastLevelId }) {
   return (
     <div style={{
@@ -2482,7 +2444,7 @@ export default function App() {
   const nextLevel = levelIdx >= 0 && levelIdx < pathLevels.length - 1 ? pathLevels[levelIdx + 1] : null;
   const isMap = screen === "map";
   const isCongrats = screen === "congrats";
-  const isFullBleed = isMap || isCongrats || screen === "start" || screen === "credentials";
+  const isFullBleed = isMap || isCongrats || screen === "start";
   const goFinish = () => setScreen("congrats");
   const navProps = {
     onBack: () => setScreen("map"),
@@ -2572,12 +2534,14 @@ export default function App() {
         @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint,.name-wheel-tack-latch,.home-floater,.home-blob,.name-call-fab,.name-wheel-idle,.name-wheel-glow,.name-wheel-win-slice,.name-wheel-winner-pop{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop,.home-floater{display:none}}`}</style>
       {screen === "start" && (
         <StartScreen onContinue={(p) => {
-          setProfile({ ...p, dob: randomPatientDob(), healthCard: FIXED_HEALTH_CARD });
-          setScreen("credentials");
+          setProfile({
+            ...p,
+            dob: randomPatientDob(),
+            healthCard: FIXED_HEALTH_CARD,
+            cardExpiry: formatExpiry(),
+          });
+          setScreen("map");
         }} />
-      )}
-      {screen === "credentials" && profile && (
-        <CredentialsScreen profile={profile} onStart={() => setScreen("map")} />
       )}
       {screen === "map" && profile && <Roadmap onOpen={openLevel} profile={profile} lastLevelId={lastLevelId} />}
       {isCongrats && profile && (
