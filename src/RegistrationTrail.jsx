@@ -1833,7 +1833,7 @@ function NameCallSpinner({ names = PARTICIPANTS }) {
           padding: "11px 16px", fontFamily: display, fontWeight: 800, fontSize: 14, cursor: "pointer",
           boxShadow: "0 8px 24px rgba(242,181,59,0.35)",
         }}>
-        <Dices size={18} /> Call someone
+        <Dices size={18} /> Pick someone
       </button>
     );
   }
