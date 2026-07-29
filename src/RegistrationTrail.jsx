@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import {
   Target, Compass, Sparkles, ArrowLeft, ChevronRight,
-  Star, Link2, ExternalLink, IdCard, Mic, BookOpen
+  Star, Link2, ExternalLink, IdCard, Mic, BookOpen, Dices, X
 } from "lucide-react";
 
 /*
@@ -13,6 +13,8 @@ import {
       placeholder for you to reword. Each needs a unique id if you wire answers later.
       Discuss blocks are live group discussion, no Forms answer.
       { type:"scenario", ... } blocks set the scene; wrap key terms in { red: "..." }.
+
+  >>> EDIT PARTICIPANTS: replace the names in PARTICIPANTS below for the call-on spinner.
 */
 
 const C = {
@@ -46,6 +48,37 @@ const randomPatientDob = () => {
   return formatDob(new Date(pick));
 };
 const FIXED_HEALTH_CARD = "5012 468 503";
+// Session call-on spinner — replace with your participant list before class
+const PARTICIPANTS = [
+  "Matthew Windeler",
+  "Leena Mascarenhas",
+  "Amrutha Madhu Kumarapuram",
+  "Priya Prabhakaran",
+  "Marvel Onyekezini",
+  "Samantha Sarkar",
+  "Christine Assin",
+  "Blessing Udoh",
+  "Yomna Ibrahim",
+  "Queen Onyegbule",
+  "Haritha Hari",
+  "Christina Shah",
+  "Herman Liang",
+  "Hanying Li",
+  "Paramjit Kaur",
+  "Hastings Gold",
+];
+const WHEEL_COLORS = [
+  "#5EEAD4", "#60A5FA", "#FBBF24", "#4ADE80",
+  "#C084FC", "#FB7185", "#A3E635", "#F472B6",
+  "#38BDF8", "#F59E0B", "#818CF8", "#34D399",
+  "#E879F9", "#F87171", "#2DD4BF", "#FCD34D",
+];
+const WHEEL_TEXT = [
+  "#134E4A", "#1E3A8A", "#78350F", "#14532D",
+  "#581C87", "#9F1239", "#365314", "#9D174D",
+  "#0C4A6E", "#7C2D12", "#312E81", "#064E3B",
+  "#701A75", "#7F1D1D", "#115E59", "#78350F",
+];
 const formatExpiry = () => {
   const d = new Date();
   d.setDate(d.getDate() + 5);
@@ -166,6 +199,115 @@ const LEVELS = [
 
       
     ],
+  },
+];
+
+const SCENARIO_PATH = [
+  {
+    id: "scen1", name: "Scenario 1", sub: "Setup & practice patient",
+    segments: [
+      "A brand-new clerk starts their first day and needs to be fully ready to work in the system. Before touching a single real patient, someone must confirm the ",
+      { red: "AppBar" },
+      " is fully set up (",
+      { red: "PM Office, SchAppBook, Documents, Scheduling Reports" },
+      "), and a ",
+      { red: "preassigned fictitious patient" },
+      " is available in PM Office for safe practice.",
+    ],
+    note: "..... allowing us to walk through initial system setup and navigation before any real patient is involved.",
+  },
+  {
+    id: "scen2", name: "Scenario 2", sub: "SchAppBook configuration",
+    segments: [
+      "A new outpatient clinic location is preparing to go live. Before a single appointment can be booked, the scheduling team must confirm the location, resources, and appointment types are properly ",
+      { red: "configured in SchAppBook" },
+      ".",
+    ],
+    note: "..... allowing us to walk through the configuration work that sits behind every appointment booked.",
+  },
+  {
+    id: "scen3", name: "Scenario 3", sub: "Book & Pre Reg",
+    segments: [
+      "A physician's office calls to book a patient for a diagnostic clinic visit next week. The scheduler must ",
+      { red: "make the appointment" },
+      " in the Schedule Appointment Book and create the linked ",
+      { red: "Pre Reg Encounter" },
+      " for that visit.",
+    ],
+    note: "..... allowing us to walk through appointment booking and its linked pre-registration encounter.",
+  },
+  {
+    id: "scen4", name: "Scenario 4", sub: "Check-in & coverage",
+    segments: [
+      "A patient arrives for their scheduled visit. Front desk must ",
+      { red: "check in the patient using PM Office" },
+      ", confirm the correct coverage, and use ",
+      { red: "Appt Check-in by Location" },
+      " to bring up the day's schedule including patients covered under ",
+      { red: "WCB, RCMP, Out of Province, and CAF" },
+      ".",
+    ],
+    note: "..... allowing us to walk through check-in and the different insurance pathways.",
+  },
+  {
+    id: "scen5", name: "Scenario 5", sub: "Confirm & modify",
+    segments: [
+      "A doctor requests an appointment for a patient, but confirmation is still pending. The appointment shows ",
+      { red: "yellow" },
+      " until scheduling reaches the patient, ",
+      { red: "confirms the appointment" },
+      ", and if needed ",
+      { red: "modifies the appointment details" },
+      ".",
+    ],
+    note: "..... allowing us to walk through the confirmation checkpoint and appointment modification.",
+  },
+  {
+    id: "scen6", name: "Scenario 6", sub: "Pre-Admit & inpatient",
+    segments: [
+      "A patient is scheduled for an elective procedure. The day before, they must be ",
+      { red: "pre-admitted" },
+      ", and on arrival they must be formally ",
+      { red: "registered as an inpatient" },
+      ".",
+    ],
+    note: "..... allowing us to walk through the Pre-Admit and Inpatient Registration workflow.",
+  },
+  {
+    id: "scen7", name: "Scenario 7", sub: "No Show & remapping",
+    segments: [
+      "One patient fails to show for their appointment and must be rescheduled using the ",
+      { red: "No Show and drag-and-drop methods" },
+      ". A second patient was checked in under the ",
+      { red: "wrong encounter" },
+      " after arrival and needs that corrected.",
+    ],
+    note: "..... allowing us to walk through rescheduling and correcting appointments after check-in.",
+  },
+  {
+    id: "scen8", name: "Scenario 8", sub: "Recurring & groups",
+    segments: [
+      "A patient is booked into a six-week ",
+      { red: "recurring physiotherapy series" },
+      ", and additional appointments must later be ",
+      { red: "added to that series" },
+      ". Separately, a facilitator creates a ",
+      { red: "Group Session" },
+      " slot, and participants are added as individual patients.",
+    ],
+    note: "..... allowing us to walk through recurring appointments and group session scheduling.",
+  },
+  {
+    id: "scen9", name: "Scenario 9", sub: "Print documents",
+    segments: [
+      "A patient being admitted needs their ",
+      { red: "armband, face sheet, and labels printed" },
+      " from the Documents tab. Meanwhile, the unit needs tomorrow's ",
+      { red: "full schedule printed" },
+      " from Scheduling Reports.",
+    ],
+    note: "..... allowing us to walk through printing patient documents and scheduling reports.",
+    finish: true,
   },
 ];
 
@@ -1598,63 +1740,317 @@ function FloatingMascot({ emoji }) {
   );
 }
 
-function WorldMap({ onOpen, mascot, lastLevelId }) {
+function polar(cx, cy, r, angleDeg) {
+  const a = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+}
+
+function piePath(cx, cy, r, startDeg, endDeg) {
+  const s = polar(cx, cy, r, startDeg);
+  const e = polar(cx, cy, r, endDeg);
+  const large = endDeg - startDeg > 180 ? 1 : 0;
+  return `M ${cx} ${cy} L ${s.x} ${s.y} A ${r} ${r} 0 ${large} 1 ${e.x} ${e.y} Z`;
+}
+
+function wheelLabel(fullName) {
+  return fullName.trim().split(/\s+/)[0] || fullName;
+}
+
+function NameCallSpinner({ names = PARTICIPANTS }) {
+  const list = names.filter(Boolean);
+  const n = list.length;
+  const slice = n > 0 ? 360 / n : 360;
+  const size = 400;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 188;
+
+  const [open, setOpen] = useState(false);
+  const [rotation, setRotation] = useState(0);
+  const [spinning, setSpinning] = useState(false);
+  const [latching, setLatching] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [winnerIdx, setWinnerIdx] = useState(null);
+  const spinTimers = useRef([]);
+
+  useEffect(() => () => {
+    spinTimers.current.forEach((t) => clearTimeout(t));
+  }, []);
+
+  const rotationTo = (fromTopDeg, fromRotation) => {
+    const currentMod = ((fromRotation % 360) + 360) % 360;
+    const desiredMod = (360 - fromTopDeg) % 360;
+    let delta = desiredMod - currentMod;
+    if (delta < 0) delta += 360;
+    return delta;
+  };
+
+  const spin = () => {
+    if (spinning || n < 1) return;
+    spinTimers.current.forEach((t) => clearTimeout(t));
+    spinTimers.current = [];
+
+    const idx = Math.floor(Math.random() * n);
+    const centerFromTop = idx * slice + slice / 2;
+    const extraSpins = 5 + Math.floor(Math.random() * 3);
+    // Land past the winner toward the next pie, then ease back onto center
+    const overshootDeg = slice * (0.32 + Math.random() * 0.12);
+    const finalRot = rotation + extraSpins * 360 + rotationTo(centerFromTop, rotation);
+    const nearMissRot = finalRot + overshootDeg;
+
+    setSpinning(true);
+    setLatching(false);
+    setWinner(null);
+    setWinnerIdx(null);
+    setRotation(nearMissRot);
+
+    const t1 = window.setTimeout(() => {
+      setLatching(true);
+      setRotation(finalRot);
+    }, 4600);
+    const t2 = window.setTimeout(() => {
+      setSpinning(false);
+      setLatching(false);
+      setWinner(list[idx]);
+      setWinnerIdx(idx);
+    }, 4600 + 780);
+    spinTimers.current = [t1, t2];
+  };
+
+  if (n < 1) return null;
+
+  if (!open) {
+    return (
+      <button type="button" onClick={() => setOpen(true)} aria-label="Open name spinner"
+        className="name-call-fab"
+        style={{
+          position: "fixed", left: "clamp(10px, 2vw, 16px)", bottom: "clamp(10px, 2vw, 16px)", zIndex: 120,
+          display: "inline-flex", alignItems: "center", gap: 8,
+          background: `linear-gradient(135deg, ${C.gold} 0%, #FF8A65 100%)`, color: C.ink,
+          border: `2px solid ${C.gold}`, borderRadius: 999,
+          padding: "11px 16px", fontFamily: display, fontWeight: 800, fontSize: 14, cursor: "pointer",
+          boxShadow: "0 8px 24px rgba(242,181,59,0.35)",
+        }}>
+        <Dices size={18} /> Call someone
+      </button>
+    );
+  }
+
+  const wheelTransition = spinning
+    ? (latching
+      ? "transform 0.75s cubic-bezier(0.22, 1.4, 0.36, 1)"
+      : "transform 4.6s cubic-bezier(0.08, 0.72, 0.1, 1)")
+    : "none";
+
+  return (
+    <div style={{
+      position: "fixed", left: "clamp(8px, 1.5vw, 14px)", bottom: "clamp(8px, 1.5vw, 14px)", zIndex: 120,
+      width: "min(440px, calc(100vw - 16px))",
+      background: "linear-gradient(165deg, #FFFDF7 0%, #FFFFFF 40%, #F0FDFA 100%)",
+      border: `2px solid ${C.gold}`, borderRadius: 18, padding: 16,
+      boxShadow: "0 12px 36px rgba(20,40,60,0.18), 0 0 0 4px rgba(242,181,59,0.12)",
+      maxHeight: "calc(100vh - 16px)", overflowY: "auto",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <Dices size={16} style={{ color: "#B8851A" }} />
+          <span style={{ fontFamily: display, fontWeight: 800, fontSize: 13, color: "#B8851A", letterSpacing: 0.4 }}>
+            RANDOM CALL
+          </span>
+        </div>
+        <button type="button" onClick={() => setOpen(false)} aria-label="Close spinner"
+          style={{
+            border: "none", background: C.paper, borderRadius: 8, width: 28, height: 28,
+            display: "grid", placeItems: "center", cursor: "pointer", color: C.inkSoft,
+          }}>
+          <X size={16} />
+        </button>
+      </div>
+
+      <div style={{ position: "relative", width: size, height: size, margin: "10px auto 12px", maxWidth: "100%" }}
+        className={!spinning ? "name-wheel-idle" : undefined}>
+        <div aria-hidden className="name-wheel-glow" style={{
+          position: "absolute", inset: -8, borderRadius: "50%", pointerEvents: "none",
+          background: "conic-gradient(from 0deg, #5EEAD4, #60A5FA, #FBBF24, #C084FC, #FB7185, #5EEAD4)",
+          opacity: 0.35, filter: "blur(10px)",
+        }} />
+        <div aria-hidden style={{
+          position: "absolute", left: "50%", top: -4, transform: "translateX(-50%)", zIndex: 3,
+          filter: "drop-shadow(0 2px 2px rgba(17,32,46,.25))",
+        }}>
+          <div className={latching ? "name-wheel-tack-latch" : undefined} style={{ transformOrigin: "50% 8px" }}>
+            <div style={{
+              width: 0, height: 0, margin: "0 auto",
+              borderLeft: "14px solid transparent",
+              borderRight: "14px solid transparent",
+              borderTop: `28px solid ${C.ink}`,
+            }} />
+            <div style={{
+              width: 12, height: 12, margin: "-6px auto 0", borderRadius: "50%",
+              background: C.gold, border: `2px solid ${C.ink}`,
+            }} />
+          </div>
+        </div>
+
+        <div style={{
+          position: "relative", zIndex: 1,
+          width: "100%", height: "100%", borderRadius: "50%",
+          transform: `rotate(${rotation}deg)`,
+          transition: wheelTransition,
+          boxShadow: "inset 0 0 0 5px #fff, 0 6px 18px rgba(20,40,60,0.14)",
+        }}>
+          <svg width="100%" height="100%" viewBox={`0 0 ${size} ${size}`}>
+            <defs>
+              <filter id="wheelTextHalo" x="-40%" y="-40%" width="180%" height="180%">
+                <feDropShadow dx="0" dy="0" stdDeviation="1.4" floodColor="#FFFFFF" floodOpacity="1" />
+              </filter>
+              <filter id="wheelWinGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#F2B53B" floodOpacity="0.85" />
+              </filter>
+            </defs>
+            {list.map((name, i) => {
+              const start = i * slice;
+              const end = start + slice;
+              const mid = start + slice / 2;
+              const fill = WHEEL_COLORS[i % WHEEL_COLORS.length];
+              const ink = WHEEL_TEXT[i % WHEEL_TEXT.length];
+              const isWin = !spinning && winnerIdx === i;
+              const label = wheelLabel(name);
+              const textPos = polar(cx, cy, r * 0.55, mid);
+              const fontSize = label.length > 9 ? 14 : label.length > 6 ? 15 : 16;
+              return (
+                <g key={`${name}-${i}`} className={isWin ? "name-wheel-win-slice" : undefined}
+                  filter={isWin ? "url(#wheelWinGlow)" : undefined}>
+                  <path d={piePath(cx, cy, r, start, end)} fill={fill}
+                    stroke={isWin ? "#F59E0B" : "#FFFFFF"} strokeWidth={isWin ? 5 : 3}
+                    opacity={1} />
+                  <text
+                    x={textPos.x} y={textPos.y}
+                    textAnchor="middle" dominantBaseline="middle"
+                    transform={`rotate(${mid - 90}, ${textPos.x}, ${textPos.y})`}
+                    fontFamily={display} fontWeight="800" fontSize={fontSize}
+                    fill={ink} letterSpacing="0.4"
+                    stroke="#FFFFFF" strokeWidth="4" paintOrder="stroke"
+                    filter="url(#wheelTextHalo)"
+                    style={{ userSelect: "none" }}
+                  >
+                    {label}
+                  </text>
+                </g>
+              );
+            })}
+            <circle cx={cx} cy={cy} r="30" fill={C.card} stroke={C.ink} strokeWidth="3" />
+            <text x={cx} y={cy + 1} textAnchor="middle" dominantBaseline="middle"
+              fontFamily={display} fontWeight="800" fontSize="13" fill={C.ink}>SPIN</text>
+          </svg>
+        </div>
+      </div>
+
+      <button type="button" onClick={spin} disabled={spinning}
+        className={spinning ? undefined : "rt-interactive-tap"}
+        style={{
+          ...primaryBtn, width: "100%",
+          background: spinning ? C.gray : `linear-gradient(135deg, ${C.gold} 0%, #FF8A65 55%, #FB7185 100%)`,
+          color: C.ink,
+          opacity: spinning ? 0.75 : 1, cursor: spinning ? "wait" : "pointer",
+        }}>
+        <Dices size={18} />
+        {spinning ? (latching ? "Almost…" : "Spinning…") : "Spin"}
+      </button>
+
+      <div className={winner && !spinning ? "name-wheel-winner-pop" : undefined} style={{
+        marginTop: 10, minHeight: 44, borderRadius: 12, padding: "10px 12px", textAlign: "center",
+        background: winner ? C.goldSoft : C.paper, border: `1px dashed ${winner ? C.gold : C.line}`,
+      }}>
+        {spinning ? (
+          <span style={{ fontFamily: display, fontWeight: 700, color: C.inkSoft, fontSize: 14 }}>
+            {latching ? "Catching…" : "Who will it be…"}
+          </span>
+        ) : winner ? (
+          <span style={{ fontFamily: display, fontWeight: 800, color: C.ink, fontSize: 18 }}>
+            {winner}, you're up!
+          </span>
+        ) : (
+          <span style={{ fontFamily: font, color: C.inkSoft, fontSize: 13 }}>Hit Spin to call on someone</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TrailPath({ levels, onOpen, mascot, lastLevelId, label, pathKey, accent = C.gold, nodeFill = C.blueSoft, nodeStroke = C.blue }) {
   const ref = useRef(null);
-  const n = LEVELS.length;
+  const n = levels.length;
   const STEP = 200, X0 = 110, yUp = 112, yDn = 214, H = 330;
-  const W = X0 * 2 + (n - 1) * STEP;
+  const W = X0 * 2 + Math.max(n - 1, 0) * STEP;
   const px = (i) => X0 + i * STEP;
   const py = (i) => (i % 2 === 0 ? yUp : yDn);
-  const pts = LEVELS.map((_, i) => ({ x: px(i), y: py(i) }));
-  const lastIdx = Math.max(0, LEVELS.findIndex((l) => l.id === lastLevelId));
-  // viewport shows worlds 1–2 fully, plus a peek of world 3
+  const pts = levels.map((_, i) => ({ x: px(i), y: py(i) }));
+  const lastIdx = Math.max(0, levels.findIndex((l) => l.id === lastLevelId));
+  const showMascot = levels.some((l) => l.id === lastLevelId);
   const VISIBLE_W = X0 + 2 * STEP + 78 + STEP * 0.35;
-  const visibleRatio = VISIBLE_W / W;
+  const visibleRatio = VISIBLE_W / Math.max(W, VISIBLE_W);
+  const fid = pathKey || "trail";
   useEffect(() => {
     const scrollEl = ref.current;
-    if (!scrollEl) return;
+    if (!scrollEl || !showMascot) return;
     const nodeX = px(lastIdx);
     const svgWidth = scrollEl.scrollWidth;
     const target = (nodeX / W) * svgWidth - scrollEl.clientWidth * 0.35;
     scrollEl.scrollTo({ left: Math.max(0, target), behavior: "smooth" });
-  }, [lastIdx, W]);
+  }, [lastIdx, W, showMascot]);
   return (
-    <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
-      <div style={{ fontSize: 12, color: C.inkSoft, marginBottom: 6, flexShrink: 0 }}>scroll right to travel the worlds →</div>
+    <div style={{
+      minHeight: "calc(100vh - 200px)", flexShrink: 0,
+      display: "flex", flexDirection: "column", justifyContent: "center",
+      paddingBottom: 28, boxSizing: "border-box",
+    }}>
+      <div style={{
+        fontSize: 12, color: C.inkSoft, marginBottom: 8, flexShrink: 0,
+        display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap",
+      }}>
+        <span style={{
+          fontFamily: display, fontWeight: 800, fontSize: 12, color: accent === C.gold ? "#B8851A" : C.teal,
+          background: accent === C.gold ? C.goldSoft : C.tealSoft,
+          padding: "3px 10px", borderRadius: 999, letterSpacing: 0.3,
+        }}>{label}</span>
+        <span>scroll right to travel →</span>
+      </div>
       <div ref={ref} style={{
-        flex: 1, minHeight: 0, overflowX: "auto", overflowY: "hidden", display: "flex", alignItems: "center",
+        flex: 1, minHeight: 280, overflowX: "auto", overflowY: "hidden", display: "flex", alignItems: "center",
         maskImage: "linear-gradient(to right, black 0%, black 88%, transparent 100%)",
         WebkitMaskImage: "linear-gradient(to right, black 0%, black 88%, transparent 100%)",
       }}>
         <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMinYMid meet"
-          style={{ height: "50vh", width: `calc(100% / ${visibleRatio})`, display: "block", flexShrink: 0 }}>
+          style={{ height: "min(52vh, 380px)", width: `calc(100% / ${visibleRatio})`, display: "block", flexShrink: 0 }}>
           <defs>
-            <filter id="m3d" x="-50%" y="-50%" width="200%" height="200%">
+            <filter id={`m3d-${fid}`} x="-50%" y="-50%" width="200%" height="200%">
               <feDropShadow dx="0" dy="3" stdDeviation="2" floodColor="#11202E" floodOpacity="0.38" />
             </filter>
-            <filter id="nodeShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <filter id={`nodeShadow-${fid}`} x="-50%" y="-50%" width="200%" height="200%">
               <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="#11202E" floodOpacity="0.18" />
             </filter>
           </defs>
           <path d={smoothPath(pts)} fill="none" stroke="#EFE7D5" strokeWidth="16" strokeLinecap="round" strokeLinejoin="round" />
-          <path d={smoothPath(pts)} fill="none" stroke={C.gold} strokeWidth="4" strokeLinecap="round" strokeDasharray="1 17" />
-          {LEVELS.map((lv, i) => {
+          <path d={smoothPath(pts)} fill="none" stroke={accent} strokeWidth="4" strokeLinecap="round" strokeDasharray="1 17" />
+          {levels.map((lv, i) => {
             const x = px(i), y = py(i), boxY = i % 2 === 0 ? y + 38 : y - 96;
             return (
               <g key={lv.id} className="rt-interactive-tap" onClick={() => onOpen(lv.id)}
                  style={{ cursor: "pointer" }} role="button" tabIndex={0}
                  aria-label={lv.name} onKeyDown={(e) => { if (e.key === "Enter") onOpen(lv.id); }}>
-                <rect x={x - 78} y={boxY} width="156" height="58" rx="13" fill={C.card} stroke={lv.boss ? C.gold : C.line} strokeWidth="1.5" />
+                <rect x={x - 78} y={boxY} width="156" height="58" rx="13" fill={C.card}
+                  stroke={lv.boss || lv.finish ? accent : C.line} strokeWidth="1.5" />
                 <text x={x} y={boxY + 21} textAnchor="middle" fontFamily={display} fontWeight="700" fontSize="14" fill={C.ink}>{lv.name}</text>
                 <text x={x} y={boxY + 37} textAnchor="middle" fontFamily={font} fontSize="11" fill={C.inkSoft}>{lv.sub}</text>
-                <circle cx={x} cy={y} r="30" fill={C.blueSoft} stroke={C.blue} strokeWidth="3" filter="url(#nodeShadow)" />
-                <text x={x} y={y + 8} textAnchor="middle" fontFamily={display} fontWeight="800" fontSize="20" fill={C.blue}>{i + 1}</text>
-                {lv.boss && <text x={x + 26} y={y - 22} textAnchor="middle" fontSize="16">⭐</text>}
-                {i === lastIdx && (
+                <circle cx={x} cy={y} r="30" fill={nodeFill} stroke={nodeStroke} strokeWidth="3" filter={`url(#nodeShadow-${fid})`} />
+                <text x={x} y={y + 8} textAnchor="middle" fontFamily={display} fontWeight="800" fontSize="20" fill={nodeStroke}>{i + 1}</text>
+                {(lv.boss || lv.finish) && <text x={x + 26} y={y - 22} textAnchor="middle" fontSize="16">⭐</text>}
+                {showMascot && i === lastIdx && (
                   <g>
                     <ellipse className="mascot-shadow" cx={x} cy={y - 17} rx="15" ry="4.5" fill="#11202E" />
                     <g className="mascot-bob">
-                      <text x={x} y={y - 30} textAnchor="middle" fontSize="34" filter="url(#m3d)">{mascot}</text>
+                      <text x={x} y={y - 30} textAnchor="middle" fontSize="34" filter={`url(#m3d-${fid})`}>{mascot}</text>
                     </g>
                   </g>
                 )}
@@ -1667,19 +2063,106 @@ function WorldMap({ onOpen, mascot, lastLevelId }) {
   );
 }
 
+function WorldMap({ onOpen, mascot, lastLevelId }) {
+  return (
+    <div style={{ flex: 1, minHeight: 0, overflowY: "auto", overflowX: "hidden", scrollSnapType: "y mandatory" }}>
+      <div style={{ scrollSnapAlign: "start" }}>
+        <TrailPath
+          levels={LEVELS} onOpen={onOpen} mascot={mascot} lastLevelId={lastLevelId}
+          label="Practice Trail" pathKey="practice" accent={C.gold} nodeFill={C.blueSoft} nodeStroke={C.blue}
+        />
+        <div style={{
+          textAlign: "center", fontSize: 12, color: C.inkSoft, fontFamily: display, fontWeight: 700,
+          padding: "4px 0 12px",
+        }}>
+          ↓ scroll down for Scenario Path
+        </div>
+      </div>
+      <div style={{ scrollSnapAlign: "start" }}>
+        <TrailPath
+          levels={SCENARIO_PATH} onOpen={onOpen} mascot={mascot} lastLevelId={lastLevelId}
+          label="Scenario Path" pathKey="scenarios" accent={C.teal} nodeFill={C.tealSoft} nodeStroke={C.teal}
+        />
+      </div>
+    </div>
+  );
+}
+
+function StartScreenBackdrop() {
+  const floaters = useMemo(() => {
+    const picks = [
+      "🦊", "🦉", "🦦", "🦭", "🐧", "🦌", "🐢", "🦋", "🐝", "🐙",
+      "🐳", "🦩", "🦔", "🐨", "🐸", "🦜", "🦄", "🦫", "🐬", "🐞",
+    ];
+    return Array.from({ length: 22 }, (_, i) => ({
+      id: i,
+      emoji: picks[i % picks.length],
+      left: `${(i * 17 + (i % 5) * 11) % 94}%`,
+      size: 22 + (i % 5) * 6,
+      dur: `${18 + (i % 7) * 3.5}s`,
+      delay: `${-((i * 1.7) % 16)}s`,
+      drift: `${-40 + (i % 9) * 10}px`,
+      bob: `${12 + (i % 4) * 6}px`,
+      opacity: 0.18 + (i % 5) * 0.04,
+      path: i % 2 === 0 ? "homeFloatA" : "homeFloatB",
+    }));
+  }, []);
+
+  const blobs = useMemo(() => ([
+    { top: "8%", left: "6%", size: 180, color: C.tealSoft, dur: "22s", delay: "0s" },
+    { top: "55%", left: "70%", size: 220, color: C.goldSoft, dur: "26s", delay: "-6s" },
+    { top: "70%", left: "10%", size: 160, color: C.blueSoft, dur: "24s", delay: "-12s" },
+    { top: "15%", left: "72%", size: 140, color: C.greenSoft, dur: "20s", delay: "-4s" },
+  ]), []);
+
+  return (
+    <div aria-hidden style={{ position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none", zIndex: 0 }}>
+      <div style={{
+        position: "absolute", inset: 0,
+        background: `radial-gradient(ellipse 80% 60% at 20% 15%, ${C.tealSoft} 0%, transparent 55%),
+          radial-gradient(ellipse 70% 50% at 85% 80%, ${C.goldSoft} 0%, transparent 50%),
+          radial-gradient(ellipse 60% 45% at 50% 50%, ${C.blueSoft}88 0%, transparent 60%),
+          ${C.paper}`,
+      }} />
+      {blobs.map((b, i) => (
+        <div key={`blob-${i}`} className="home-blob" style={{
+          position: "absolute", top: b.top, left: b.left, width: b.size, height: b.size,
+          borderRadius: "50%", background: b.color, filter: "blur(8px)", opacity: 0.7,
+          animationDuration: b.dur, animationDelay: b.delay,
+        }} />
+      ))}
+      {floaters.map((f) => (
+        <span key={f.id} className={`home-floater home-floater-${f.path === "homeFloatA" ? "a" : "b"}`} style={{
+          position: "absolute", left: f.left, bottom: "-8%",
+          fontSize: f.size, lineHeight: 1, opacity: f.opacity,
+          animationDuration: f.dur, animationDelay: f.delay,
+          "--home-drift": f.drift, "--home-bob": f.bob,
+        }}>{f.emoji}</span>
+      ))}
+    </div>
+  );
+}
+
 function StartScreen({ onContinue }) {
   const [name, setName] = useState("");
   const [mascot, setMascot] = useState(null);
   const ready = name.trim() && mascot;
   return (
-    <div style={{ minHeight: "100vh", background: C.paper, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 18px" }}>
-      <div style={{ width: "100%", maxWidth: 520 }}>
+    <div style={{
+      minHeight: "100vh", position: "relative", overflow: "hidden",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 18px",
+    }}>
+      <StartScreenBackdrop />
+      <div style={{ width: "100%", maxWidth: 520, position: "relative", zIndex: 1 }}>
         <div style={{ textAlign: "center", marginBottom: 22 }}>
           <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, color: C.teal, fontFamily: display }}>ENRICHMENT TRAINING</div>
           <h1 style={{ fontFamily: display, fontSize: 36, color: C.ink, margin: "6px 0 4px", lineHeight: 1.1 }}>Reg/Sched Trail</h1>
           <p style={{ color: C.inkSoft, margin: 0, lineHeight: 1.5 }}>Enter your name and pick a trail buddy.</p>
         </div>
-        <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 18, padding: 22 }}>
+        <div style={{
+          background: "rgba(255,255,255,0.92)", border: `1px solid ${C.line}`, borderRadius: 18, padding: 22,
+          backdropFilter: "blur(8px)", boxShadow: "0 12px 40px rgba(20,40,60,0.08)",
+        }}>
           <label style={lbl}>Your name</label>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Elby"
             style={{ width: "100%", boxSizing: "border-box", border: `1px solid ${C.line}`, borderRadius: 10,
@@ -1754,7 +2237,7 @@ function Roadmap({ onOpen, profile, lastLevelId }) {
         <div style={{ fontSize: 32, lineHeight: 1 }}>{profile.mascot}</div>
         <div>
           <div style={{ fontFamily: display, fontWeight: 700, color: C.ink, fontSize: "clamp(20px, 3vw, 28px)" }}>Registration Trail</div>
-          <p style={{ margin: "2px 0 0", fontSize: 13, color: C.inkSoft }}>{profile.name} · tap any world, any order</p>
+          <p style={{ margin: "2px 0 0", fontSize: 13, color: C.inkSoft }}>{profile.name} · scroll down for the other path</p>
         </div>
       </div>
       <FormsBanner />
@@ -1870,6 +2353,63 @@ function CongratulationsScreen({ profile, onMap }) {
   );
 }
 
+function ScenarioPathView({ level, onBack, prevLevel, onPrev, nextLevel, onNext, onFinish }) {
+  useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [level.id]);
+  const navBtn = { flex: 1, minWidth: 140, padding: "12px 14px", justifyContent: "center" };
+  const isLast = !!level.finish || !nextLevel;
+  return (
+    <div style={{ maxWidth: LEVEL_CONTENT_MAX, margin: "0 auto", padding: "8px 24px 0" }}>
+      <button onClick={onBack} style={backBtn}><ArrowLeft size={16} /> Trail</button>
+      <div style={{
+        marginTop: 14, background: C.card, border: `1px solid ${C.line}`, borderRadius: 18,
+        padding: "28px 26px 24px", boxShadow: "0 8px 28px rgba(20,40,60,0.06)",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 18 }}>
+          <div style={{
+            width: 42, height: 42, borderRadius: "50%", background: C.blue, color: "#fff",
+            display: "grid", placeItems: "center", flexShrink: 0,
+          }}>
+            <BookOpen size={20} />
+          </div>
+          <h2 style={{ fontFamily: display, fontSize: 28, color: C.blue, margin: 0 }}>{level.name}:</h2>
+        </div>
+        <p style={{ margin: "0 0 18px", color: C.ink, lineHeight: 1.7, fontSize: 17, fontWeight: 600 }}>
+          {level.segments.map((part, i) =>
+            typeof part === "string"
+              ? <span key={i}>{part}</span>
+              : <span key={i} style={{ color: C.red, fontWeight: 800 }}>{part.red}</span>
+          )}
+        </p>
+        {level.note && (
+          <p style={{ margin: 0, color: C.inkSoft, fontSize: 15, lineHeight: 1.55, fontStyle: "italic" }}>
+            {level.note}
+          </p>
+        )}
+      </div>
+      <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+        {prevLevel ? (
+          <button onClick={onPrev} style={{ ...backBtn, ...navBtn }}>
+            <ArrowLeft size={16} />
+            <span>Prev <span style={{ fontSize: 11, opacity: 0.85 }}>({prevLevel.name})</span></span>
+          </button>
+        ) : null}
+        <button onClick={onBack} style={{ ...backBtn, ...navBtn }}>Back to trail</button>
+        {isLast ? (
+          <button onClick={onFinish} className="rt-interactive-tap" style={{ ...primaryBtn, ...navBtn, background: C.gold, color: C.ink }}>
+            <Star size={16} fill={C.ink} />
+            Finish & get certificate
+          </button>
+        ) : (
+          <button onClick={onNext} className="rt-interactive-tap" style={{ ...primaryBtn, ...navBtn }}>
+            <span>Next <span style={{ fontSize: 11, fontWeight: 600, opacity: 0.9 }}>({nextLevel.name})</span></span>
+            <ChevronRight size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function LevelView({ level, profile, onBack, prevLevel, onPrev, nextLevel, onNext, onFinish }) {
   const [doneSteps, setDoneSteps] = useState({});
   const markDone = (id) => setDoneSteps((d) => ({ ...d, [id]: true }));
@@ -1934,13 +2474,24 @@ export default function App() {
     }
   }, []);
 
-  const current = LEVELS.find((l) => l.id === screen);
-  const levelIdx = LEVELS.findIndex((l) => l.id === screen);
-  const prevLevel = levelIdx > 0 ? LEVELS[levelIdx - 1] : null;
-  const nextLevel = levelIdx >= 0 && levelIdx < LEVELS.length - 1 ? LEVELS[levelIdx + 1] : null;
+  const practiceLevel = LEVELS.find((l) => l.id === screen);
+  const scenarioLevel = SCENARIO_PATH.find((l) => l.id === screen);
+  const pathLevels = scenarioLevel ? SCENARIO_PATH : LEVELS;
+  const levelIdx = pathLevels.findIndex((l) => l.id === screen);
+  const prevLevel = levelIdx > 0 ? pathLevels[levelIdx - 1] : null;
+  const nextLevel = levelIdx >= 0 && levelIdx < pathLevels.length - 1 ? pathLevels[levelIdx + 1] : null;
   const isMap = screen === "map";
   const isCongrats = screen === "congrats";
   const isFullBleed = isMap || isCongrats || screen === "start" || screen === "credentials";
+  const goFinish = () => setScreen("congrats");
+  const navProps = {
+    onBack: () => setScreen("map"),
+    prevLevel,
+    onPrev: () => prevLevel && openLevel(prevLevel.id),
+    nextLevel,
+    onNext: () => nextLevel && openLevel(nextLevel.id),
+    onFinish: goFinish,
+  };
   return (
     <div style={{
       minHeight: "100vh", fontFamily: font,
@@ -1974,6 +2525,42 @@ export default function App() {
         @keyframes discussPop{0%{transform:translateY(6px);opacity:.7;box-shadow:0 0 0 0 rgba(242,181,59,0.35)}70%{box-shadow:0 4px 24px rgba(242,181,59,0.2),0 0 0 6px rgba(242,181,59,0.18)}100%{transform:translateY(0);opacity:1}}
         .avatar-rain-drop{animation:avatarRain linear forwards}
         @keyframes avatarRain{0%{transform:translateY(-10vh) translateX(0) rotate(0deg);opacity:1}100%{transform:translateY(110vh) translateX(var(--rain-drift,0px)) rotate(360deg);opacity:.85}}
+        .name-wheel-tack-latch{animation:nameWheelTackLatch .75s cubic-bezier(0.22, 1.35, 0.36, 1)}
+        @keyframes nameWheelTackLatch{
+          0%{transform:rotate(0deg)}
+          18%{transform:rotate(24deg)}
+          45%{transform:rotate(-12deg)}
+          70%{transform:rotate(5deg)}
+          100%{transform:rotate(0deg)}
+        }
+        .name-call-fab{animation:nameCallFab 2.2s ease-in-out infinite}
+        @keyframes nameCallFab{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.04)}}
+        .name-wheel-idle{animation:nameWheelIdle 5s ease-in-out infinite}
+        @keyframes nameWheelIdle{0%,100%{transform:rotate(-1.2deg)}50%{transform:rotate(1.2deg)}}
+        .name-wheel-glow{animation:nameWheelGlow 3.5s linear infinite}
+        @keyframes nameWheelGlow{to{transform:rotate(360deg)}}
+        .name-wheel-win-slice{animation:nameWheelWinPulse .9s ease-in-out 3}
+        @keyframes nameWheelWinPulse{0%,100%{opacity:1}50%{opacity:.82}}
+        .name-wheel-winner-pop{animation:nameWheelWinnerPop .55s cubic-bezier(.34,1.4,.5,1)}
+        @keyframes nameWheelWinnerPop{0%{transform:scale(.92);opacity:.6}100%{transform:scale(1);opacity:1}}
+        .home-floater{animation-timing-function:linear;animation-iteration-count:infinite;will-change:transform}
+        .home-floater-a{animation-name:homeFloatA}
+        .home-floater-b{animation-name:homeFloatB}
+        @keyframes homeFloatA{
+          0%{transform:translate3d(0,0,0) rotate(-8deg)}
+          50%{transform:translate3d(var(--home-drift,20px),calc(-55vh - var(--home-bob,16px)),0) rotate(12deg)}
+          100%{transform:translate3d(calc(var(--home-drift,20px) * -0.4),-110vh,0) rotate(-4deg)}
+        }
+        @keyframes homeFloatB{
+          0%{transform:translate3d(0,10vh,0) rotate(6deg)}
+          50%{transform:translate3d(calc(var(--home-drift,-24px) * -1),calc(-50vh + var(--home-bob,12px)),0) rotate(-10deg)}
+          100%{transform:translate3d(var(--home-drift,-24px),-115vh,0) rotate(8deg)}
+        }
+        .home-blob{animation:homeBlobDrift ease-in-out infinite alternate}
+        @keyframes homeBlobDrift{
+          0%{transform:translate(0,0) scale(1)}
+          100%{transform:translate(28px,-22px) scale(1.12)}
+        }
         .rt-interactive-tap{animation:rtTap 2.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
         .rt-interactive-drag{animation:rtDrag 1.7s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
         .rt-interactive-drop{animation:rtDrop 2.2s ease-in-out infinite}
@@ -1982,7 +2569,7 @@ export default function App() {
         @keyframes rtDrag{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-5px) scale(1.08)}}
         @keyframes rtDrop{0%,100%{box-shadow:0 0 0 0 rgba(14,156,138,0);border-color:rgba(74,92,112,.45)}50%{box-shadow:0 0 0 6px rgba(14,156,138,.22);border-color:rgba(14,156,138,.75)}}
         @keyframes rtCutHint{0%,100%{stroke-opacity:1;stroke-width:3.5}50%{stroke-opacity:.55;stroke-width:5}}
-        @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop{display:none}}`}</style>
+        @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.discuss-pop,.rec-enc-orbit,.rec-enc-box-flash,.group-member-float,.boss-thread-fall-left,.boss-thread-fall-right,.avatar-rain-drop,.rt-interactive-tap,.rt-interactive-drag,.rt-interactive-drop,.rt-thread-cut-hint,.name-wheel-tack-latch,.home-floater,.home-blob,.name-call-fab,.name-wheel-idle,.name-wheel-glow,.name-wheel-win-slice,.name-wheel-winner-pop{animation:none!important}.group-member-float{transform:translate(-50%,-50%)}.avatar-rain-drop,.home-floater{display:none}}`}</style>
       {screen === "start" && (
         <StartScreen onContinue={(p) => {
           setProfile({ ...p, dob: randomPatientDob(), healthCard: FIXED_HEALTH_CARD });
@@ -1996,14 +2583,15 @@ export default function App() {
       {isCongrats && profile && (
         <CongratulationsScreen profile={profile} onMap={() => setScreen("map")} />
       )}
-      {current && (
-        <LevelView level={current} profile={profile} onBack={() => setScreen("map")}
-          prevLevel={prevLevel} onPrev={() => prevLevel && openLevel(prevLevel.id)}
-          nextLevel={nextLevel} onNext={() => nextLevel && openLevel(nextLevel.id)}
-          onFinish={() => setScreen("congrats")} />
+      {scenarioLevel && (
+        <ScenarioPathView level={scenarioLevel} {...navProps} />
       )}
-      {profile && current && <FloatingMascot emoji={profile.mascot} />}
-      {profile && (screen === "map" || current) && <PatientRefBar profile={profile} />}
+      {practiceLevel && (
+        <LevelView level={practiceLevel} profile={profile} {...navProps} />
+      )}
+      {profile && (practiceLevel || scenarioLevel) && <FloatingMascot emoji={profile.mascot} />}
+      {profile && (screen === "map" || practiceLevel || scenarioLevel) && <PatientRefBar profile={profile} />}
+      {!isCongrats && <NameCallSpinner />}
     </div>
   );
 }
